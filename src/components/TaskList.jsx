@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Edit2, Trash2, Calendar, User, AlertTriangle } from 'lucide-react';
 import { formatDate, getStatusLabel, getStatusColor, getPriorityLabel, getPriorityColor } from '../utils/constants';
+import Button from './ui/Button';
 
 export default function TaskList({ tasks, onEdit, onDelete, onViewHistory }) {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
@@ -95,18 +96,20 @@ export default function TaskList({ tasks, onEdit, onDelete, onViewHistory }) {
                     Apakah Anda yakin ingin menghapus task "{task.title}"? Tindakan ini tidak dapat dibatalkan.
                   </p>
                   <div className="flex space-x-3">
-                    <button
+                    <Button
                       onClick={() => setDeleteConfirm(null)}
-                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                      variant="secondary"
+                      className="flex-1"
                     >
                       Batal
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={() => handleDelete(task.id)}
+                      variant='danger'
                       className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
                     >
                       Hapus
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
