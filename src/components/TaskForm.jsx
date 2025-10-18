@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { TASK_STATUS_OPTIONS, TASK_PRIORITY_OPTIONS } from '../utils/constants';
+import Button from './ui/Button';
 
 export default function TaskForm({ task, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
@@ -173,19 +174,21 @@ export default function TaskForm({ task, onSubmit, onCancel }) {
             </div>
           )}
           <div className="flex space-x-3 pt-4">
-            <button
+            <Button
               type="button"
               onClick={onCancel}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              variant='outline-danger'
+              className="flex-1"
             >
               Batal
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              variant='primary'
+              className="flex-1"
             >
               {task ? 'Update Task' : 'Buat Task'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
