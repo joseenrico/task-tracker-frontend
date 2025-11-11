@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { dashboardService } from '../services/dashboardService';
-import { CheckCircle, Clock, AlertCircle, ListTodo, TrendingUp, Users } from 'lucide-react';
+import * as Progress from '@radix-ui/react-progress';
+import {
+  CheckCircledIcon,
+  ClockIcon,
+  ExclamationTriangleIcon,
+  ListBulletIcon,
+  ArrowUpIcon,
+  PersonIcon,
+} from '@radix-ui/react-icons';
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -37,35 +45,35 @@ export default function Dashboard() {
     {
       title: 'Total Tasks',
       value: stats?.statistics.total_tasks || 0,
-      icon: ListTodo,
+      icon: ListBulletIcon,
       color: 'bg-blue-500',
       bgColor: 'bg-blue-50',
     },
     {
       title: 'Belum Dimulai',
       value: stats?.statistics.not_started || 0,
-      icon: Clock,
+      icon: ClockIcon,
       color: 'bg-gray-500',
       bgColor: 'bg-gray-50',
     },
     {
       title: 'Sedang Dikerjakan',
       value: stats?.statistics.in_progress || 0,
-      icon: TrendingUp,
+      icon: ArrowUpIcon,
       color: 'bg-yellow-500',
       bgColor: 'bg-yellow-50',
     },
     {
       title: 'Selesai',
       value: stats?.statistics.completed || 0,
-      icon: CheckCircle,
+      icon: CheckCircledIcon,
       color: 'bg-green-500',
       bgColor: 'bg-green-50',
     },
     {
       title: 'Terlambat',
       value: stats?.statistics.overdue || 0,
-      icon: AlertCircle,
+      icon: ExclamationTriangleIcon,
       color: 'bg-red-500',
       bgColor: 'bg-red-50',
     },
@@ -97,7 +105,7 @@ export default function Dashboard() {
       </div>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div className="flex items-center space-x-2 mb-4">
-          <Users className="w-5 h-5 text-blue-600" />
+          <PersonIcon className="w-5 h-5 text-blue-600" />
           <h2 className="text-lg font-semibold text-gray-900">Team Activity</h2>
         </div>
         {teamActivity.length > 0 ? (
@@ -131,7 +139,6 @@ export default function Dashboard() {
                     const completionRate = total > 0 
                       ? Math.round((completed * 100 + inProgress * 50) / total) 
                       : 0;
-
                     return (
                       <tr key={index} className="hover:bg-gray-50">
                         <td className="px-4 py-3 whitespace-nowrap">
@@ -159,12 +166,15 @@ export default function Dashboard() {
                         </td>
                         <td className="px-4 py-3 text-center">
                           <div className="flex items-center justify-center space-x-2">
-                            <div className="w-24 bg-gray-200 rounded-full h-2">
-                              <div
-                                className="bg-blue-600 h-2 rounded-full"
+                            <Progress.Root 
+                              className="w-24 bg-gray-200 rounded-full h-2 overflow-hidden"
+                              value={completionRate}
+                            >
+                              <Progress.Indicator
+                                className="bg-blue-600 h-full rounded-full transition-all duration-300"
                                 style={{ width: `${completionRate}%` }}
-                              ></div>
-                            </div>
+                              />
+                            </Progress.Root>
                             <span className="text-sm font-medium text-gray-900">
                               {completionRate}%
                             </span>
@@ -176,25 +186,27 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </div>
-            <div className="flex justify-between items-center mt-4">
-              <button
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-              <span className="text-sm text-gray-700">
-                Page {currentPage} of {totalPages}
-              </span>
-              <button
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            </div>
+            {totalPages > 1 && (
+              <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-3">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors duration-200 w-full sm:w-auto"
+                >
+                  Previous
+                </button>
+                <span className="text-sm text-gray-700">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors duration-200 w-full sm:w-auto"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </>
         ) : (
           <p className="text-gray-500 text-center py-8">Belum ada data aktivitas tim</p>
@@ -202,13 +214,12 @@ export default function Dashboard() {
       </div>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activities</h2>
-        
         {stats?.recent_activities && stats.recent_activities.length > 0 ? (
           <div className="space-y-3">
             {stats.recent_activities.slice(0, 5).map((activity, index) => (
               <div
                 key={index}
-                className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200"
               >
                 <div className="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-blue-500"></div>
                 <div className="flex-1 min-w-0">

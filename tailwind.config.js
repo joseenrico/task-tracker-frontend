@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Raleway', 'sans-serif'],
+        sans: ['system-ui', 'sans-serif'],
       },
       colors: {
         primary: {
